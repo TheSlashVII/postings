@@ -1,0 +1,17 @@
+# build stage
+FROM node:latest AS build
+WORKDIR /home/node/backend
+COPY --chmod=755 postings_backend/  .
+# install the environment
+RUN npm i
+# compile the code
+RUN npm run build
+
+# run stage
+FROM build AS start
+# switch working dir to the current 
+WORKDIR /home/node/backend/dist
+# ENV NODE_ENV="production node dist/main.js"
+EXPOSE 3000
+# run the code
+CMD [ "node", "main.js" ]

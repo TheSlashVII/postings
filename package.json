@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@nestjs/authentication": "^0.1.1"
+  }
+}

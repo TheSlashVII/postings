@@ -1,0 +1,11 @@
+services:
+  postings_mysql:
+    image: mysql
+    ports:
+    - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-postings_db}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-#atgdbh12@}
+      - MYSQL_USER=${MYSQL_USER:-postings_user} 
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-@zum448bum9m1@}
+      
