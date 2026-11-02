@@ -16,6 +16,8 @@ export class JobPost {
   @Column()
   description: number
 
+  @Column()
+  post_status: string
 
   @OneToMany(() => ApplicationStatus, (applicationStatus) => applicationStatus.jobPost)
   applicationStatus: Relation<ApplicationStatus>
