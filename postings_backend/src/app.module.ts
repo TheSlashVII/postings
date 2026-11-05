@@ -7,11 +7,15 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthenticationModule } from '@nestjs/authentication';
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 // loads the .env file in the root folder for the backend
-process.loadEnvFile()
+try {
+  process.loadEnvFile()
+} catch (error) {
+  console.warn("No env file found inside the image. Using values defined in the compose.yaml file or default values.")
+}
 export const defaultDbConfig = {
   type: 'mysql',
   host: process.env.MYSQL_HOST ?? 'localhost',
-  port: Number(process.env.MYSQL_HOST) ?? 3306,
+  port: Number(process.env.MYSQL_PORT) ?? 3306,
   username: process.env.MYSQL_USER ?? "postings_user",
   password: process.env.MYSQL_PASSWORD ?? "@zum448bum9m1@",
   database: process.env.MYSQL_DATABASE ?? "postings_db",
@@ -30,7 +34,7 @@ export const defaultDbConfig = {
     }),
     AuthenticationModule.forRoot({
       accessToken: {
-        key: process.env.JWT_SECRET!,
+        key: process.env.JWT_SECRET ?? "uffrngcN/CGQBjtHWAM728QCNH+73WzwakmE5C/6ovM=",
         issuer: "http://postings.net",
         audience: "full-app",
         ttl: "3h"

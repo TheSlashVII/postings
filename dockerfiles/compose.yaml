@@ -8,4 +8,37 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-#atgdbh12@}
       - MYSQL_USER=${MYSQL_USER:-postings_user} 
       - MYSQL_PASSWORD=${MYSQL_PASSWORD:-@zum448bum9m1@}
+    healthcheck:
+      test: [ "CMD", "mysqladmin","ping", "-h", "postings_mysql", "-u", "$$MYSQL_USER", "-p$$MYSQL_PASSWORD" ]
+      interval: 1m30s
+      timeout: 2s 
+      retries: 10
+      start_period: 10s
+      start_interval: 45s
       
+  postings_backend:
+    image: postings_backend
+    ports:
+      - "3000"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-uffrngcN/CGQBjtHWAM728QCNH+73WzwakmE5C/6ovM=}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-postings_db}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-@zum448bum9m1@}
+      - MYSQL_USER=${MYSQL_USER:-postings_user} 
+      - MYSQL_HOST=${MYSQL_HOST:-postings_mysql}
+      - MYSQL_PORT=${MYSQL_PORT:-3306}
+      - NODE_ENV=production
+    depends_on:
+      postings_mysql:
+        condition: service_healthy
+
+  postings_frontend:
+    image: postings_frontend
+    ports: 
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+
+       
+    
+    

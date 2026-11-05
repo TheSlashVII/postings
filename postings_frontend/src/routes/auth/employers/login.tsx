@@ -12,7 +12,7 @@ function RouteComponent() {
       <div className='flex flex-col gap-5 text-sm'>
         <div className='mt-5 flex flex-col gap-2'>
           <label>Email</label>
-          <input id='email' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='example@email.com' />
+          <input id='email' type='email' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='example@email.com' />
         </div>
         <div className='mt-5 flex flex-col gap-2'>
           <label>Password</label>

@@ -1,8 +1,26 @@
-
 @import "tailwindcss";
 
 * {
   box-sizing: border-box;
+}
+
+:root {
+  --main-accent: #463F3A;
+  --secondary-colour: #8A817C;
+  --terciary-accent: #BCB8B1;
+  --default-bg: #F4F3EE;
+  --input-accent: #E6E5DF;
+  --secondary-accent: #E0AFA0;
+}
+
+@font-face {
+  font-family: "headland-one";
+  src: url("assets/fonts/headland_one/HeadlandOne-Regular.ttf");
+}
+
+@font-face {
+  font-family: "ibm-sans";
+  src: url("assets/fonts/ibm_plex/IBMPlexSans-VariableFont_wdth,wght.ttf");
 }
 
 html,
@@ -14,4 +32,3 @@ body,
 body {
   margin: 0;
 }
-

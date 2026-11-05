@@ -6,8 +6,8 @@ export type JobExperience = {
   position: string,
   company_name: string,
   start_date: string | Date,
-  end_date: string | Date,
-  description: string
+  end_date?: string | Date,
+  description?: string
 }
 
 export type JobPost = {
