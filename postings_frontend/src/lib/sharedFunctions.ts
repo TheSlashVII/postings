@@ -29,4 +29,9 @@ export function formatDateForDatabase(date: Date | string): string {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
 }
 
+export function formatPhoneNumber(number: string) {
+  let formatted: string = number.trim().replaceAll(" ", "")
+  return formatted;
+}
+
 

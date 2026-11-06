@@ -27,7 +27,7 @@ export class User {
     type: "date",
     nullable: true
   })
-  date_of_birth: Date
+  date_of_birth: Date | string
 
   @Column({
     length: 200,
@@ -36,6 +36,13 @@ export class User {
   city_of_residence: string
 
   @Column({
+    length: 200,
+    nullable: true
+  })
+  country: string
+
+  @Column({
+    unique: true,
     length: 150
   })
   email: string
@@ -44,7 +51,8 @@ export class User {
   password: string
 
   @Column({
-    nullable: true
+    nullable: true,
+    unique: true
   })
   phone: string
 

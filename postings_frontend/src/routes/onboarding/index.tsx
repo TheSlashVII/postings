@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useState, type MouseEvent } from 'react'
-import type { JobExperience } from '#/lib/types'
-import { formatDate } from '#/lib/sharedFunctions'
-
+import type { JobExperience, OnboardingPersonalDetails } from '#/lib/types'
+import { formatDate, formatDateForDatabase, formatPhoneNumber } from '#/lib/sharedFunctions'
+import { useMutation } from '@tanstack/react-query'
+import { api } from '#/lib/axios'
+import axios from 'axios'
 export const Route = createFileRoute('/onboarding/')({
   component: RouteComponent,
 })
@@ -18,31 +20,31 @@ function RouteComponent() {
             <div className='flex gap-2 min-w-full mt-2'>
               <div className='flex flex-col gap-2 grow'>
                 <label>Names</label>
-                <input id='name' autoComplete='false' type='text' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='super secret password' />
+                <input onChange={(e) => setName(e.target.value)} id='name' autoComplete='false' type='text' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='James' />
               </div>
               <div className='flex flex-col gap-2 grow'>
                 <label>Surnames</label>
-                <input id='surname' autoComplete='false' type='text' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='super secret password' />
+                <input onChange={(e) => setSurname(e.target.value)} id='surname' autoComplete='false' type='text' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='Anderson' />
               </div>
             </div>
             <div className='flex gap-2 min-w-full'>
               <div className='mt-5 flex flex-col gap-2 grow'>
                 <label>Date of birth</label>
-                <input id='date_of_birth' autoComplete='false' type='date' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='20/08/1994' />
+                <input onChange={(e) => setDateOfBirth(e.target.value)} id='date_of_birth' autoComplete='false' type='date' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='20/08/1994' />
               </div>
               <div className='mt-5 flex flex-col gap-2 grow'>
                 <label>Phone number</label>
-                <input id='number' autoComplete='false' type='text' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='+12 344 573 381' />
+                <input onChange={(e) => setPhone(e.target.value)} id='number' autoComplete='false' type='text' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='+12 344 573 381' />
               </div>
             </div>
 
             <div className='mt-2 flex flex-col gap-2'>
               <label>City of residence</label>
-              <input id='city' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='Your company Ltd' />
+              <input onChange={(e) => setCity(e.target.value)} id='city' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='Your company Ltd' />
             </div>
             <div className='mt-2 flex flex-col gap-2'>
               <label>Country of residence</label>
-              <input id='country' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='Explain briefly what you did in your job' />
+              <input onChange={(e) => setCountry(e.target.value)} id='country' className='py-1 px-2 border-[0.5px] rounded bg-(--input-accent) border-(--main-accent) outline-0' placeholder='Explain briefly what you did in your job' />
             </div>
           </div>
 
@@ -70,16 +72,19 @@ function RouteComponent() {
                 {experience.map(element => <div key={element.id} className='border px-2 py-1 rounded'>
                   <p className='font-bold'>{element.position}</p>
                   <p className='text-sm'>{element.company_name}</p>
-                  <p className='text-xs'>From {element.start_date.toString()} {element.end_date ? `to ${element.end_date.toString()}` : ""}</p>
+                  <p className='text-xs'>From {formatDate(element.start_date.toString())} {element.end_date ? `to ${formatDate(element.end_date.toString())}` : ""}</p>
                 </div>
                 )}
               </div>
             </div>
             :
-            <button className='max-w-fit hover:cursor-pointer' onClick={(e) => switchToJobExperienceForm(e)}>+ Add experience</button>
+            <button className='hover:text-black/60 transition-colors max-w-fit hover:cursor-pointer' onClick={(e) => switchToJobExperienceForm(e)}>+ Add experience</button>
           }
 
-          <button className='self-end bg-(--secondary-colour) text-white py-2 px-8 rounded-sm font-bold text-sm'>Next</button>
+          <div className='flex justify-end gap-2 items-center'>
+            <button onClick={(e) => switchToPersonalDetailsForm(e)} className='hover:cursor-pointer hover:bg-(--secondary-colour)/10 transition-colors self-end border-2 border-(--secondary-colour) text-(--secondary-colour) py-2 px-8 rounded-sm font-bold text-sm'>Back</button>
+            <button onClick={e => confirmData(e)} className='hover:cursor-pointer hover:bg-(--secondary-colour)/90 hover:border-(--secondary-colour)/90 transition-colors self-end bg-(--secondary-colour) text-white border-2 border-(--secondary-colour)  py-2 px-8 rounded-sm font-bold text-sm'>Next</button>
+          </div>
         </div>
         <div className='text-center flex md:flex-col md:gap-15 gap-2 grow items-center'>
           <h1 className='md:text-2xl lg:text-3xl text-xl font-[headland-one]'>Postings.net</h1>
@@ -135,6 +140,18 @@ function RouteComponent() {
       </div>
     )
   }
+  const confirmData = function (e: any) {
+    e.preventDefault()
+    if (personalDetails) {
+      sendData.mutate({ jobExperience: experience, personalDetails: personalDetails })
+    }
+  }
+  const sendData = useMutation({
+    mutationFn: (onboardingData: { jobExperience: JobExperience[], personalDetails: OnboardingPersonalDetails }) => {
+      return api.post("/user/onboard", onboardingData)
+    }
+  })
+
   const [experience, setExperience] = useState<(JobExperience & { id: string })[]>([])
   const [position, setPosition] = useState<string>("")
   const [start_date, setStartDate] = useState<string>("")
@@ -143,6 +160,17 @@ function RouteComponent() {
   const [description, setDescription] = useState<string>("")
   const [currentPage, setCurrentPage] = useState<string>("personalDetails")
   const [triggerUpdate, setTriggerUpdate] = useState<boolean>(false) // used to indicate the page to update the values of the experience list
+
+  // data for personal details
+
+  const [name, setName] = useState<string>("")
+  const [surname, setSurname] = useState<string>("")
+  const [dateOfBirth, setDateOfBirth] = useState<string | Date>("")
+  const [country, setCountry] = useState<string>("")
+  const [city, setCity] = useState<string>("")
+  const [personalDetails, setPersonalDetails] = useState<OnboardingPersonalDetails>()
+  const [phone, setPhone] = useState<string>("")
+
   /*
   const saveNewJobExperience = function (e: any) {
     e.preventDefault()
@@ -176,12 +204,12 @@ function RouteComponent() {
     setCurrentPage("experienceForm")
 
   }
-  // tracked fields for creating a job experience
-  const saveNewJobExperience = function (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
+  const switchToPersonalDetailsForm = function (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
     e.preventDefault()
-    setTriggerUpdate(true)
-    setCurrentPage("experienceList")
+    setCurrentPage("personalDetails")
+
   }
+  // tracked fields for creating a job experience
   const switchToJobExperience = function (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, addChanges: boolean = false) {
     e.preventDefault()
     if (addChanges) {
@@ -199,6 +227,15 @@ function RouteComponent() {
         setPage(personalDetailsForm())
         break;
       case "experienceList":
+        setPersonalDetails({
+          name: name,
+          surname: surname,
+          city_of_residence: city,
+          country: country,
+          phone: formatPhoneNumber(phone),
+          date_of_birth: formatDateForDatabase(new Date(dateOfBirth))
+        })
+        console.log(personalDetails)
         setPage(jobExperienceList())
         break;
       case "experienceForm":
@@ -217,9 +254,9 @@ function RouteComponent() {
         id: crypto.randomUUID(),
         company_name: company,
         position: position,
-        start_date: formatDate(new Date(start_date)),
+        start_date: formatDateForDatabase(new Date(start_date)),
         description: description ?? "",
-        end_date: end_date ? formatDate(new Date(end_date)) : undefined
+        end_date: end_date ? formatDateForDatabase(new Date(end_date)) : undefined
       }
       setExperience((previousExperience) => [...previousExperience, newExperience])
       setTriggerUpdate(false)

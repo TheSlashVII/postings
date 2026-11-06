@@ -10,6 +10,15 @@ export type JobExperience = {
   description?: string
 }
 
+export type OnboardingPersonalDetails = {
+  name: string,
+  surname: string,
+  date_of_birth: string | Date,
+  city_of_residence: string,
+  country: string,
+  phone: string
+}
+
 export type JobPost = {
   title: string,
   company_name: string,
