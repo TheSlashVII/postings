@@ -1,0 +1,27 @@
+import { Controller, Post, Body, Headers, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { UserService } from './user.service.js';
+import { SaveOnboardingDto } from './dto/createUserDto.js';
+
+@Controller('user')
+export class UserController {
+  constructor(private readonly userService: UserService) {
+
+  }
+
+  @Post("onboard")
+  async saveNewData(@Body() onboadingDto: SaveOnboardingDto, @Headers("Authorization") token: string) {
+    try {
+      await this.userService.saveNewOnboaringData(onboadingDto, token)
+      return { message: "success" }
+    } catch (error: any) {
+      if (error.cause == "user does not exist") {
+        throw new BadRequestException("Incorrect credentials or user not found")
+      } else {
+        throw new InternalServerErrorException("Something went wrong", error.message)
+      }
+
+    }
+
+
+  }
+}

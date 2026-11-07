@@ -39,6 +39,7 @@ export class ApplicationStatus {
   })
   status: JobStatus
 
+  // will automatically insert the date 
   @CreateDateColumn()
   applied_date: Date
 

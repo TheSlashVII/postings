@@ -1,10 +1,9 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState, type MouseEvent } from 'react'
 import type { JobExperience, OnboardingPersonalDetails } from '#/lib/types'
 import { formatDate, formatDateForDatabase, formatPhoneNumber } from '#/lib/sharedFunctions'
 import { useMutation } from '@tanstack/react-query'
 import { api } from '#/lib/axios'
-import axios from 'axios'
 export const Route = createFileRoute('/onboarding/')({
   component: RouteComponent,
 })
@@ -151,7 +150,14 @@ function RouteComponent() {
       return api.post("/user/onboard", onboardingData)
     }
   })
+  const navigate = useNavigate({ from: "/onboarding/" })
 
+  useEffect(() => {
+    if (sendData.status === "success") {
+      navigate({ to: "/home" })
+    }
+
+  }, [sendData.status])
   const [experience, setExperience] = useState<(JobExperience & { id: string })[]>([])
   const [position, setPosition] = useState<string>("")
   const [start_date, setStartDate] = useState<string>("")

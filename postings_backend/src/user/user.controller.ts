@@ -19,9 +19,18 @@ export class UserController {
       } else {
         throw new InternalServerErrorException("Something went wrong", error.message)
       }
-
     }
-
+  }
+  @Post("account_setup/status")
+  async getAccountSetupStatus(@Headers("Authorization") token: string) {
+    try {
+      return await this.userService.getAccountStatus(token)
+    } catch (error: any) {
+      if (error.cause === "user does not exist") {
+        throw new BadRequestException("Incorrect credentials or user not found")
+      }
+      throw new InternalServerErrorException("Something went wrong")
+    }
 
   }
 }

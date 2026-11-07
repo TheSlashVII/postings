@@ -1,4 +1,4 @@
-import { Column, PrimaryGeneratedColumn, Entity, ForeignKey, ManyToOne, JoinColumn } from "typeorm";
+import { Column, PrimaryGeneratedColumn, Entity, ForeignKey, ManyToOne, JoinColumn, PrimaryColumn } from "typeorm";
 import type { Relation } from "typeorm";
 import { User } from "../user/user.js";
 
@@ -17,20 +17,23 @@ export class JobExperience {
   company_name: string // the company_name will be normalized by the backend
 
   @Column({
-    nullable: true
+    nullable: true,
+    type: "date"
   })
-  start_date: Date
+  start_date: Date | string
 
   @Column({
-    nullable: true
+    nullable: true,
+    type: "date"
   })
-  end_date: Date
+  end_date: Date | string
 
   @Column({
     length: 400
   })
   description: string
 
+  @PrimaryColumn()
   @Column()
   id_user: string
 

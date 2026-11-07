@@ -6,6 +6,8 @@ COPY --chmod=755 postings_backend/  .
 RUN npm i
 # compile the code
 RUN npm run build
+# uncomment if you need to run migrations on the database (usually needed for the first time you run this app)
+# RUN npm run migration:run -- -d dist/db/postings.datasource.js
 
 # run stage
 FROM build AS start

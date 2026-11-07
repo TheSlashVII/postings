@@ -1,24 +1,37 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useMutation } from '@tanstack/react-query'
-import { apiPublic } from '#/lib/axios'
+import { api, apiPublic } from '#/lib/axios'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/auth/candidates/register')({
+export const Route = createFileRoute('/auth/register')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // checks if the account is new or not
+  const checkAccountStatus = useMutation({
+    mutationFn: async function () {
+      const { data } = await api.post<{ isUserNew: boolean }>("/user/account_setup/status")
+      return data;
+    },
+    onSuccess(data) {
+      if (data.isUserNew) {
+        navigate({ to: "/onboarding" })
+      }
+    }
+  })
   const login = useMutation({
     mutationFn: async function () {
       const { data } = await apiPublic.post<{ accessToken?: string }>("/auth/login", { email: email, password: password });
       return data;
     },
-    onSuccess(data) {
+    async onSuccess(data) {
       const token: string = data.accessToken!
       localStorage.setItem("token", token)
-      console.log(login.data)
+      // console.log(login.data)
+      await checkAccountStatus.mutateAsync()
     },
 
   })
@@ -39,10 +52,11 @@ function RouteComponent() {
     e.preventDefault()
     sendData.mutate()
   }
+  const navigate = useNavigate({ from: "/auth/register" })
   // for debugging
   return <div className='lg:px-40 md:30 px-10 py-10 md:gap-20 gap-5  font-[ibm-sans] flex flex-col-reverse md:flex-row items-center justify-around min-h-screen bg-(--default-bg)'>
     <form className='bg-white rounded-lg border-b-3 border-b-(--main-accent) p-7 max-h-fit md:p-10 grow flex flex-col gap-5'>
-      <h3 className='font-semibold text-lg'>Register - Candidates</h3>
+      <h3 className='font-semibold text-lg'>Register</h3>
       {/*input fields*/}
       <div className='flex flex-col gap-5 text-sm'>
         <div className='mt-5 flex flex-col gap-2'>

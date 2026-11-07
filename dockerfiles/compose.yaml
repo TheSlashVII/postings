@@ -18,6 +18,9 @@ services:
       
   postings_backend:
     image: postings_backend
+    build:
+      context: ./backend/
+    
     ports:
       - "3000"
     environment:

@@ -5,17 +5,18 @@ import { AppService } from './app.service.js';
 import { AuthModule } from './auth/auth.module.js';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthenticationModule } from '@nestjs/authentication';
+import { UserModule } from './user/user.module.js';
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 // loads the .env file in the root folder for the backend
 try {
   process.loadEnvFile()
 } catch (error) {
-  console.warn("No env file found inside the image. Using default values")
+  console.warn("No env file found inside the image. Using values defined in the compose.yaml file or default values.")
 }
 export const defaultDbConfig = {
   type: 'mysql',
   host: process.env.MYSQL_HOST ?? 'localhost',
-  port: Number(process.env.MYSQL_HOST) ?? 3306,
+  port: Number(process.env.MYSQL_PORT) ?? 3306,
   username: process.env.MYSQL_USER ?? "postings_user",
   password: process.env.MYSQL_PASSWORD ?? "@zum448bum9m1@",
   database: process.env.MYSQL_DATABASE ?? "postings_db",
@@ -24,14 +25,6 @@ export const defaultDbConfig = {
 }
 @Module({
   imports: [
-    // Distributed tracing, auto-correlated logs, request/job metrics, error
-    // telemetry, alarms, and more — out of the box. Sign up at https://observe.nestjs.com
-    ObserveModule.forRoot({
-      appKey: process.env.OBSERVE_APP_KEY ?? '',
-      appSecret: process.env.OBSERVE_APP_SECRET ?? '',
-      runtimeMetrics: !Boolean(process.versions?.['webcontainer']),
-      serviceId: 'postings_backend',
-    }),
     AuthenticationModule.forRoot({
       accessToken: {
         key: process.env.JWT_SECRET ?? "uffrngcN/CGQBjtHWAM728QCNH+73WzwakmE5C/6ovM=",
@@ -53,7 +46,8 @@ export const defaultDbConfig = {
       database: process.env.MYSQL_DATABASE ?? "postings_db",
       autoLoadEntities: true,
       synchronize: false,
-    })
+    }),
+    UserModule
 
 
   ],

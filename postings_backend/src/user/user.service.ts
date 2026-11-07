@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class UserService {
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>, private readonly dataSource: DataSource, private readonly jwtService: JwtService, @InjectRepository(JobExperience) private readonly jobExperienceRepository: Repository<JobExperience>) { }
 
+  // function used to update the newly created user
   async saveNewOnboaringData(data: SaveOnboardingDto, token: string) {
     let t = token.split(" ")[1]
     let userInfo: { sub: string, email: string } = this.jwtService.decode(t)
@@ -45,5 +46,23 @@ export class UserService {
 
     }
 
+  }
+
+  async getAccountStatus(token: string) {
+    let formattedToken = token.split(" ")[1]
+    let userInfo: { sub: string } = this.jwtService.decode(formattedToken)
+
+
+    let requestedUser = await this.userRepository.findOneBy({ id: userInfo.sub })
+    if (!requestedUser) {
+      throw new Error("Incorrect credentials or user not found", { cause: "user does not exist" })
+    } else {
+      // if one of the fields of the personal details form is already in the database, means that the user does not need to be redirected to account setup
+      if (requestedUser.date_of_birth) {
+        return { isUserNew: false }
+      } else {
+        return { isUserNew: true }
+      }
+    }
   }
 }
