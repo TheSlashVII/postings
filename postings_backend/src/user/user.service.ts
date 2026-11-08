@@ -10,6 +10,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class UserService {
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>, private readonly dataSource: DataSource, private readonly jwtService: JwtService, @InjectRepository(JobExperience) private readonly jobExperienceRepository: Repository<JobExperience>) { }
 
+  async verifySession(token: string) {
+    let formattedToken = token.split(" ")[1]
+    let userInfo: { sub: string } = this.jwtService.decode(formattedToken)
+    if (!await this.userRepository.existsBy({ id: userInfo.sub })) {
+      throw new Error("user does not exist", { cause: "user does not exist" })
+    } else if (!this.jwtService.verify(formattedToken, { secret: process.env.JWT_SECRET })) {
+      throw new Error("user does not exist", { cause: "user does not exist" })
+    }
+    return { isSessionValid: true }
+
+  }
   // function used to update the newly created user
   async saveNewOnboaringData(data: SaveOnboardingDto, token: string) {
     let t = token.split(" ")[1]

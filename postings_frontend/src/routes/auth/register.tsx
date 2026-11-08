@@ -10,6 +10,7 @@ export const Route = createFileRoute('/auth/register')({
 function RouteComponent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
   // checks if the account is new or not
   const checkAccountStatus = useMutation({
     mutationFn: async function () {
@@ -36,20 +37,26 @@ function RouteComponent() {
 
   })
   const sendData = useMutation({
-    mutationFn: async function () {
-      const data = await apiPublic.post("/auth/register", { email: email, password: password });
-      return data;
+    mutationFn: function () {
+      return apiPublic.post<{ message: string }>("/auth/register", { email: email, password: password });
     },
     onSuccess() {
       setTimeout(() => {
         login.mutate()
       }, 2000)
-      console.log("done")
 
     },
+    onError(error) {
+      // @ts-ignore
+      // console.log(error.response.data.message)
+      setToastMessage(error.response.data.message)
+
+
+    }
   })
-  const handleSumbit = function (e: any) {
+  const handleSubmit = function (e: any) {
     e.preventDefault()
+    setToastMessage(null) // hide message 
     sendData.mutate()
   }
   const navigate = useNavigate({ from: "/auth/register" })
@@ -73,9 +80,10 @@ function RouteComponent() {
         <p>Are you an employer? Login here instead <Link to='/auth/employers/login' className='text-(--secondary-colour) font-bold hover:text-(--secondary-colour)/70 transition-colors'>here.</Link>  </p>
         <p>Already have an account? Login <Link to='/auth/candidates/login' className='text-(--secondary-colour) font-bold hover:text-(--secondary-colour)/70 transition-colors'>here.</Link> </p>
       </div>
+      <p className='text-red-800 text-sm'>{toastMessage ?? ""}</p>
 
       {/* submit button */}
-      <button onClick={(e) => handleSumbit(e)} className='self-end bg-(--secondary-colour) text-white py-2 px-8 rounded-sm font-bold text-sm'>Submit</button>
+      <button onClick={(e) => handleSubmit(e)} className={sendData.isPending ? 'self-end bg-(--secondary-colour)/80 text-white/90 py-2 px-8 rounded-sm font-bold text-sm' : 'hover:bg-(--secondary-colour)/70 hover:cursor-pointer transition-colors self-end bg-(--secondary-colour) text-white py-2 px-8 rounded-sm font-bold text-sm'}>Submit</button>
 
     </form>
     <div className='text-center flex md:flex-col md:gap-15 gap-2 grow items-center'>

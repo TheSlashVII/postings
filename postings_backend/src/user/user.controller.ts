@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Headers, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Headers, BadRequestException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from './user.service.js';
 import { SaveOnboardingDto } from './dto/createUserDto.js';
 
@@ -31,6 +31,20 @@ export class UserController {
       }
       throw new InternalServerErrorException("Something went wrong")
     }
+  }
+
+  @Get("account/verify_session")
+  async verifyAccountSession(@Headers("Authorization") token: string) {
+    try {
+      return await this.userService.verifySession(token)
+    } catch (error: any) {
+      if (error.cause === "user does not exist") {
+        throw new UnauthorizedException("Incorrect credentials or user not found")
+      }
+      throw new InternalServerErrorException("Something went wrong", { cause: error.cause })
+
+    }
 
   }
+
 }
