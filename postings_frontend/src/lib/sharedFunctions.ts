@@ -1,4 +1,7 @@
 // file where most of the utilities are saved
+
+import { api } from "./axios"
+
 // define signatures 
 export function formatDate(date: string): string;
 export function formatDate(date: Date): string;
@@ -34,4 +37,12 @@ export function formatPhoneNumber(number: string) {
   return formatted;
 }
 
+export async function verifySession() {
+  return await api.get("/user/account/verify_session")
+}
+
+export function logout(navFunction: Promise<void>): void {
+  localStorage.removeItem("token")
+  navFunction.then()
+}
 

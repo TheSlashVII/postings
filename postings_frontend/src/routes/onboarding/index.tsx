@@ -1,11 +1,15 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState, type MouseEvent } from 'react'
 import type { JobExperience, OnboardingPersonalDetails } from '#/lib/types'
-import { formatDate, formatDateForDatabase, formatPhoneNumber } from '#/lib/sharedFunctions'
+import { verifySession, formatDate, formatDateForDatabase, formatPhoneNumber } from '#/lib/sharedFunctions'
 import { useMutation } from '@tanstack/react-query'
 import { api } from '#/lib/axios'
 export const Route = createFileRoute('/onboarding/')({
   component: RouteComponent,
+  loader: verifySession, // async function that checks if the session is valid
+  onError() {
+    throw redirect({ from: "/onboarding/", to: "/auth/candidates/login" })
+  }
 })
 
 function RouteComponent() {
