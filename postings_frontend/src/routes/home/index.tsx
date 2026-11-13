@@ -12,28 +12,28 @@ export const Route = createFileRoute('/home/')({
 
 // for employers
 function RouteComponent() {
-  function ManageCardEmployers() {
-    return (<div className='bg-white px-8 py-5  md:w-full w-fit h-fit border-b-3 border-b-(--secondary-accent) rounded-lg flex flex-col gap-3'>
+  function ManageCardEmployers(key: string) {
+    return (<div key={key} className='bg-white px-8 py-5  md:w-full w-fit h-fit border-b-3 border-b-(--secondary-accent) rounded-lg flex flex-col gap-3'>
       <p className='font-medium md:text-lg'>Manage</p>
       <div className='flex flex-col justify-start w-fit text-xs md:text-sm'>
-        <button className='text-right' onClick={() => setAccountType(AccountType.CANDIDATE)} >Switch to candidate account</button>
+        <button className='w-fit hover:cursor-pointer hover:text-black/60' onClick={() => setAccountType(AccountType.CANDIDATE)} >Switch to candidate account</button>
         <button className='w-fit hover:cursor-pointer hover:text-black/60'>Account</button>
         <button className='w-fit hover:cursor-pointer hover:text-black/60'>Log out</button>
       </div>
     </div>)
   }
-  function OpeningsCard() {
-    return (<div className='bg-white px-8 py-5  h-fit w-fit md:w-full  border-b-3 border-b-(--main-accent) rounded-lg flex flex-col gap-3'>
+  function OpeningsCard(key: string) {
+    return (<div key={key} className='bg-white px-8 py-5  h-fit w-fit md:w-full  border-b-3 border-b-(--main-accent) rounded-lg flex flex-col gap-3'>
       <p className=' font-medium md:text-lg'>Your Openings</p>
       <div className='flex flex-col text-xs md:text-sm'>
-        <button className='w-fit hover:cursor-pointer hover:text-black/60'>New Opening</button>
-        <button className='w-fit hover:cursor-pointer hover:text-black/60'>Manage Listings</button>
+        <button onClick={() => navigate({ to: "/home/listings/new-listing" })} className='w-fit hover:cursor-pointer hover:text-black/60'>New Opening</button>
+        <button onClick={() => navigate({ to: "/home/listings" })} className='w-fit hover:cursor-pointer hover:text-black/60'>Manage Listings</button>
       </div>
     </div>)
   }
   // for candidates
-  function ManageCard() {
-    return (<div className='bg-white px-8 py-5  md:w-full w-fit h-fit border-b-3 border-b-(--secondary-accent) rounded-lg flex flex-col gap-3'>
+  function ManageCard(key: string) {
+    return (<div key={key} className='bg-white px-8 py-5  md:w-full w-fit h-fit border-b-3 border-b-(--secondary-accent) rounded-lg flex flex-col gap-3'>
       <p className='font-medium md:text-lg'>Manage</p>
       <div className='flex flex-col text-xs md:text-sm'>
         <button className='w-fit hover:cursor-pointer hover:text-black/60 transition-colors' onClick={() => setAccountType(AccountType.EMPLOYER)}>Switch to Employer account</button>
@@ -43,8 +43,8 @@ function RouteComponent() {
       </div>
     </div>)
   }
-  function SearchCard() {
-    return (<div className='bg-white px-8 py-5  h-fit w-fit md:w-full  border-b-3 border-b-(--main-accent) rounded-lg flex flex-col gap-3'>
+  function SearchCard(key: string) {
+    return (<div key={key} className='bg-white px-8 py-5  h-fit w-fit md:w-full  border-b-3 border-b-(--main-accent) rounded-lg flex flex-col gap-3'>
       <p className='font-medium md:text-lg'>Search for new openings</p>
       <div className='flex flex-col text-xs md:text-sm'>
         <button className='w-fit hover:cursor-pointer hover:text-black/60 transition-colors'>Newest listings</button>
@@ -54,10 +54,10 @@ function RouteComponent() {
   }
   // functions used to render components depending on the type of user
   function CandidateComponents() {
-    return [ManageCard(), SearchCard()]
+    return [ManageCard(crypto.randomUUID()), SearchCard(crypto.randomUUID())]
   }
   function EmployerComponents() {
-    return [ManageCardEmployers(), OpeningsCard()]
+    return [ManageCardEmployers(crypto.randomUUID()), OpeningsCard(crypto.randomUUID())]
   }
 
   enum AccountType {

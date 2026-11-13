@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Headers, BadRequestException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Headers, BadRequestException, InternalServerErrorException, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { UserService } from './user.service.js';
 import { SaveOnboardingDto } from './dto/createUserDto.js';
 
@@ -43,6 +43,19 @@ export class UserController {
       }
       throw new InternalServerErrorException("Something went wrong", { cause: error.cause })
 
+    }
+
+  }
+
+  @Post("account/set_employer")
+  async setupEmployerAccount(@Headers("Authorization") token: string, @Body("company_name") companyName: string) {
+    try {
+      return await this.userService.setupEmployerAccount(companyName, token)
+    } catch (error: any) {
+      if (error.cause == "user does not exist") {
+        throw new UnauthorizedException("Incorrect credentials or user not found")
+      }
+      throw new InternalServerErrorException("Something went wrong", { cause: error.cause })
     }
 
   }

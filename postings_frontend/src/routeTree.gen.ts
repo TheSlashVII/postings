@@ -11,10 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
+import { Route as CompanySetupCompanyRouteImport } from './routes/company/setup-company'
 import { Route as HomeIndexRouteImport } from './routes/home/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
 import { Route as AuthCandidatesLoginRouteImport } from './routes/auth/candidates/login'
 import { Route as AuthEmployersLoginRouteImport } from './routes/auth/employers/login'
+import { Route as HomeListingsIndexRouteImport } from './routes/home/listings/index'
+import { Route as HomeListingsNewListingIndexRouteImport } from './routes/home/listings/new-listing/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -24,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/auth/register',
   path: '/auth/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompanySetupCompanyRoute = CompanySetupCompanyRouteImport.update({
+  id: '/company/setup-company',
+  path: '/company/setup-company',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeIndexRoute = HomeIndexRouteImport.update({
@@ -46,66 +54,98 @@ const AuthEmployersLoginRoute = AuthEmployersLoginRouteImport.update({
   path: '/auth/employers/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HomeListingsIndexRoute = HomeListingsIndexRouteImport.update({
+  id: '/home/listings/',
+  path: '/home/listings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeListingsNewListingIndexRoute =
+  HomeListingsNewListingIndexRouteImport.update({
+    id: '/home/listings/new-listing/',
+    path: '/home/listings/new-listing/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/company/setup-company': typeof CompanySetupCompanyRoute
   '/home/': typeof HomeIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/auth/candidates/login': typeof AuthCandidatesLoginRoute
   '/auth/employers/login': typeof AuthEmployersLoginRoute
+  '/home/listings/': typeof HomeListingsIndexRoute
+  '/home/listings/new-listing/': typeof HomeListingsNewListingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/company/setup-company': typeof CompanySetupCompanyRoute
   '/home': typeof HomeIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
   '/auth/candidates/login': typeof AuthCandidatesLoginRoute
   '/auth/employers/login': typeof AuthEmployersLoginRoute
+  '/home/listings': typeof HomeListingsIndexRoute
+  '/home/listings/new-listing': typeof HomeListingsNewListingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/company/setup-company': typeof CompanySetupCompanyRoute
   '/home/': typeof HomeIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/auth/candidates/login': typeof AuthCandidatesLoginRoute
   '/auth/employers/login': typeof AuthEmployersLoginRoute
+  '/home/listings/': typeof HomeListingsIndexRoute
+  '/home/listings/new-listing/': typeof HomeListingsNewListingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth/register'
+    | '/company/setup-company'
     | '/home/'
     | '/onboarding/'
     | '/auth/candidates/login'
     | '/auth/employers/login'
+    | '/home/listings/'
+    | '/home/listings/new-listing/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth/register'
+    | '/company/setup-company'
     | '/home'
     | '/onboarding'
     | '/auth/candidates/login'
     | '/auth/employers/login'
+    | '/home/listings'
+    | '/home/listings/new-listing'
   id:
     | '__root__'
     | '/'
     | '/auth/register'
+    | '/company/setup-company'
     | '/home/'
     | '/onboarding/'
     | '/auth/candidates/login'
     | '/auth/employers/login'
+    | '/home/listings/'
+    | '/home/listings/new-listing/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
+  CompanySetupCompanyRoute: typeof CompanySetupCompanyRoute
   HomeIndexRoute: typeof HomeIndexRoute
   OnboardingIndexRoute: typeof OnboardingIndexRoute
   AuthCandidatesLoginRoute: typeof AuthCandidatesLoginRoute
   AuthEmployersLoginRoute: typeof AuthEmployersLoginRoute
+  HomeListingsIndexRoute: typeof HomeListingsIndexRoute
+  HomeListingsNewListingIndexRoute: typeof HomeListingsNewListingIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,6 +162,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/register'
       fullPath: '/auth/register'
       preLoaderRoute: typeof AuthRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/company/setup-company': {
+      id: '/company/setup-company'
+      path: '/company/setup-company'
+      fullPath: '/company/setup-company'
+      preLoaderRoute: typeof CompanySetupCompanyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home/': {
@@ -152,16 +199,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthEmployersLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/home/listings/': {
+      id: '/home/listings/'
+      path: '/home/listings'
+      fullPath: '/home/listings/'
+      preLoaderRoute: typeof HomeListingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home/listings/new-listing/': {
+      id: '/home/listings/new-listing/'
+      path: '/home/listings/new-listing'
+      fullPath: '/home/listings/new-listing/'
+      preLoaderRoute: typeof HomeListingsNewListingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  CompanySetupCompanyRoute: CompanySetupCompanyRoute,
   HomeIndexRoute: HomeIndexRoute,
   OnboardingIndexRoute: OnboardingIndexRoute,
   AuthCandidatesLoginRoute: AuthCandidatesLoginRoute,
   AuthEmployersLoginRoute: AuthEmployersLoginRoute,
+  HomeListingsIndexRoute: HomeListingsIndexRoute,
+  HomeListingsNewListingIndexRoute: HomeListingsNewListingIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -8,11 +8,19 @@ export class Company {
   @PrimaryGeneratedColumn("uuid")
   id: string
 
-  @Column()
+  @Column({
+    unique: true
+  })
   url_formatted_name: string
 
+  @Column({
+    unique: true
+  })
+  name: string
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   description: string
 
   @OneToMany(() => User, (user) => user.company)

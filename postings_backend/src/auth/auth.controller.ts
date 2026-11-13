@@ -19,6 +19,9 @@ export class AuthController {
       if (err.cause === "incorrect_credentials") {
         throw new BadRequestException("An error has ocurred: No user was found.", { cause: "User not found" })
       }
+      else if (err.cause == "fields_required") {
+        throw new UnprocessableEntityException("All the fields are required")
+      }
       throw new InternalServerErrorException("Something went wrong", {
         description: err.message
       })

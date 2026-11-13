@@ -35,7 +35,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     if (email === "" || password === "") {
-      throw new Error("Email and password are required", { cause: "required fields" })
+      throw new Error("Email and password are required", { cause: "fields_required" })
     }
     let user = await this.userRepository.findOneBy({ email: email });
 

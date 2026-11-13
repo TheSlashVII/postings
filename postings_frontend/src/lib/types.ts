@@ -24,7 +24,8 @@ export type JobPost = {
   company_name: string,
   experience_required: number,
   description: string,
-  sector?: string
+  sector?: string | string[],
+  status?: string,
 }
 
 export type ApplicantProfile = {
